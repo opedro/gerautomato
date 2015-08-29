@@ -13,24 +13,28 @@ void constroiEstados(int, int);
 void construir();
 void erro();
 void sucesso();
+void iniciaarquivo();
 FILE *arquivo;
 
 int main(){
-	printf("Qual o nome do programa? \n");
-	char s[50];
-	scanf(" %s", &s);
-    arquivo = fopen(s, "wt");
-    
-	fputs("cacete", arquivo);
-	
+	iniciaarquivo();
 	printf("Quantos simbolos tem o alfabeto? \n");
 	scanf(" %d", &a);
 	constroiAlfabeto(a);
-
 	printf("Quantos estados? \n");
 	scanf(" %d", &e);
 	constroiEstados(e, a);
+	construir();
 	return 0;
+}
+
+void iniciaarquivo(){
+	printf("Qual o nome do programa? \n");
+	char s[50];
+	scanf(" %s.cpp", &s);
+    arquivo = fopen(s, "wt");
+	//includes
+	fputs("#include <stdio.h>\n#include <stdlib.h>\n#include <conio.h>\n\n", arquivo);
 }
 
 void constroiAlfabeto(int a){
@@ -39,7 +43,6 @@ void constroiAlfabeto(int a){
 		printf("Qual o simbolo %d ?\n", i+1);
 		scanf(" %c", &alfabeto[i]);
 	}
-//	alfabeto[i] = '\0';
 }
 
 void constroiEstados(int e, int a){
@@ -48,15 +51,15 @@ void constroiEstados(int e, int a){
 
 	printf("Qual o estado inicial?\ne");
 	scanf(" %d", &ei);
-	
+
 	printf("Quantos estados finais?\n");
 	scanf(" %d", &qef);
-	
+
 	for(j=0; j < qef; j++){
 		printf("Qual o estado final %d \ne", j+1);
 	    scanf(" %d", &ef[j]);
 	}
-	
+
 	for(j=0; j < e; j++){
 		for(k=0; k < a; k++){
 			printf("Para o estado e%d e simbolo %c, qual o proximo estado?\ne", j, alfabeto[k]);
@@ -66,6 +69,20 @@ void constroiEstados(int e, int a){
 }
 
 void construir(){
+	//declarações
+	fputs("char palavra[200];\n\n", arquivo);
+	for (i=0; i<e; i++){
+		fprintf(arquivo, "void e%d", i);
+	};
+
+	//inicia main
+	fputs("int main(){\n", arquivo);
+
+	//pergunta pela palavra
+	fputs("printf(\"Informe a palavra a ser testada\");\n", arquivo);
+	//recebe palavra
+	fputs("gets(&palavra);\n", arquivo);
+
 	/*if(f[p] == 'a')
 	{
 		p++;
