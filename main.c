@@ -75,11 +75,11 @@ void construir(){
 	for (i=0; i<e; i++){
 		fprintf(arquivo, "void e%d(int);\n", i);
 	};   
-    fputs("void aceita();", arquivo);
-    fputs("void rejeita();", arquivo);
+    fputs("void aceita();\n", arquivo);
+    fputs("void rejeita();\n", arquivo);
     
 	//inicia main
-	fputs("\nvoid main(){\n", arquivo);
+	fputs("int main(){\n", arquivo);
 
 	//pergunta pela palavra
 	fputs("  printf(\"Informe a palavra a ser testada\");\n", arquivo);
@@ -104,7 +104,7 @@ void construir(){
 			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
 		    fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
             fputs("\n  }", arquivo);
-            cond = "elsif";	
+            cond = "else if";	
 		}
 		for(i=0; i < qef; i++){
             //estado final?
