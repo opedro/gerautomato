@@ -84,7 +84,7 @@ void construir(){
 	//pergunta pela palavra
 	fputs("  printf(\"Informe a palavra a ser testada\");\n", arquivo);
 	//recebe palavra
-	fputs("  gets(&palavra);\n", arquivo);
+	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
 	//chama estado inicial
 	fprintf(arquivo, "  e%d(0);\n", ei);
     //finaliza main
