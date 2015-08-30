@@ -86,7 +86,7 @@ void construir(){
 	//recebe palavra
 	fputs("  gets(&palavra);\n", arquivo);
 	//chama estado inicial
-	fprintf(arquivo, "  e%d();\n", ei);
+	fprintf(arquivo, "  e%d(0);\n", ei);
     //finaliza main
 	fputs("}\n", arquivo);
 	
@@ -102,7 +102,7 @@ void construir(){
         fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
 		for(k=0; k < a; k++){            
 			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
-		    fprintf(arquivo, "    e%d();", transicao[j][k]);
+		    fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
             fputs("\n  }", arquivo);
             cond = "elsif";	
 		}
