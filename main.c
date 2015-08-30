@@ -79,7 +79,7 @@ void construir(){
     fputs("void rejeita();", arquivo);
     
 	//inicia main
-	fputs("\nvoid main(){\n", arquivo);
+	fputs("\nint main(){\n", arquivo);
 
 	//pergunta pela palavra
 	fputs("  printf(\"Informe a palavra a ser testada\");\n", arquivo);
@@ -93,8 +93,8 @@ void construir(){
 	
 	
 	//funcoes
-	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n}", arquivo);
-    fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n}", arquivo);
+	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n  exit 0;\n}", arquivo);
+    fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n  exit 0;\n}", arquivo);
     int j, k;
     char* cond;
     for(j=0; j < e; j++){
@@ -109,7 +109,7 @@ void construir(){
 		for(i=0; i < qef; i++){
             //estado final?
             if(ef[i] == j){
-            fputs("  else if(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
+            fputs("  elsif(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
             }
         }
 		fputs("  else{\n    rejeita();\n  }", arquivo);
