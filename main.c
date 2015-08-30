@@ -69,19 +69,52 @@ void constroiEstados(int e, int a){
 }
 
 void construir(){
-	//declarações
+     int i=0;
+	//declaracoes
 	fputs("char palavra[200];\n\n", arquivo);
 	for (i=0; i<e; i++){
-		fprintf(arquivo, "void e%d", i);
-	};
-
+		fprintf(arquivo, "void e%d(int);\n", i);
+	};   
+    fputs("void aceita();", arquivo);
+    fputs("void rejeita();", arquivo);
+    
 	//inicia main
-	fputs("int main(){\n", arquivo);
+	fputs("\nint main(){\n", arquivo);
 
 	//pergunta pela palavra
-	fputs("printf(\"Informe a palavra a ser testada\");\n", arquivo);
+	fputs("  printf(\"Informe a palavra a ser testada\");\n", arquivo);
 	//recebe palavra
-	fputs("gets(&palavra);\n", arquivo);
+	fputs("  gets(&palavra);\n", arquivo);
+	//chama estado inicial
+	fprintf(arquivo, "  e%d();\n", ei);
+    //finaliza main
+	fputs("}\n", arquivo);
+	
+	
+	
+	//funcoes
+	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n  exit 0;\n}", arquivo);
+    fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n  exit 0;\n}", arquivo);
+    int j, k;
+    char* cond;
+    for(j=0; j < e; j++){
+        cond = "if";
+        fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
+		for(k=0; k < a; k++){            
+			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
+		    fprintf(arquivo, "    e%d();", transicao[j][k]);
+            fputs("\n  }", arquivo);
+            cond = "elsif";	
+		}
+		for(i=0; i < qef; i++){
+            //estado final?
+            if(ef[i] == j){
+            fputs("  elsif(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
+            }
+        }
+		fputs("  else{\n    rejeita();\n  }", arquivo);
+		fputs("\n}", arquivo);
+	}
 
 	/*if(f[p] == 'a')
 	{
