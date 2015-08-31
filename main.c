@@ -82,7 +82,7 @@ void construir(){
 	fputs("int main(){\n", arquivo);
 
 	//pergunta pela palavra
-	fputs("  printf(\"Informe a palavra a ser testada\");\n", arquivo);
+	fputs("  printf(\"Informe a palavra a ser testada\n\");\n", arquivo);
 	//recebe palavra
 	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
 	//chama estado inicial
@@ -104,12 +104,12 @@ void construir(){
 			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
 		    fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
             fputs("\n  }", arquivo);
-            cond = "else if";	
+            cond = "if";	
 		}
 		for(i=0; i < qef; i++){
             //estado final?
             if(ef[i] == j){
-            fputs("  else if(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
+            fputs("if(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
             }
         }
 		fputs("  else{\n    rejeita();\n  }", arquivo);
