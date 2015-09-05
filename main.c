@@ -12,6 +12,7 @@ int ef[200];
 void constroiAlfabeto(int);
 void constroiEstados(int, int);
 void construir();
+void construirGoto();
 void erro();
 void sucesso();
 void iniciaarquivo();
@@ -89,7 +90,7 @@ void construir(){
 	fputs("int main(){\n", arquivo);
 
 	//pergunta pela palavra
-	fputs("  printf(\"Informe a palavra a ser testada\n\");\n", arquivo);
+	fputs("  printf(\"Informe a palavra a ser testada\\n\");\n", arquivo);
 	//recebe palavra
 	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
 	//chama estado inicial
@@ -105,18 +106,16 @@ void construir(){
     int j, k;
     char* cond;
     for(j=0; j < e; j++){
-        cond = "if";
         fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
 		for(k=0; k < a; k++){            
-			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
+			fprintf(arquivo, "  if(palavra[idx] == '%c'){\n", alfabeto[k]);
 		    fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
-            fputs("\n  }", arquivo);
-            cond = "if";	
+            fputs("\n  }\n", arquivo);	
 		}
 		for(i=0; i < qef; i++){
             //estado final?
             if(ef[i] == j){
-            fputs("if(palavra[idx] == '\\0'){\n    aceita();\n  }", arquivo);
+            fputs("  if(palavra[idx] == '\\0'){\n    aceita();\n  }\n", arquivo);
             }
         }
 		fputs("  else{\n    rejeita();\n  }", arquivo);
@@ -127,10 +126,8 @@ void construir(){
 void construirGoto(){
      int i=0;
 	//declaracoes
-	fputs("char palavra[200];\int idx = 0; \n\n", arquivo);
-	/*for (i=0; i<e; i++){
-		fprintf(arquivo, "e%d:\n", i);
-	};*/   
+	fputs("char palavra[200];\nint idx = 0; \n\n", arquivo);
+	
 	//inicia main
 	fputs("int main(){\n", arquivo);
 
@@ -139,33 +136,33 @@ void construirGoto(){
 	//recebe palavra
 	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
 	//chama estado inicial
-	fprintf(arquivo, "idx = 0; \n goto e%d;\n", ei);
+	fprintf(arquivo, "  idx = 0; \n goto e%d;\n", ei);
 	
 	//label
-	fputs("\n\naceita:\n  printf(\"aceita\");\n goto fim;", arquivo);
-    fputs("\n\nrejeita:\n  printf(\"rejeita\");\n goto fim;", arquivo);
+	fputs("\n  aceita:\n    printf(\"aceita\");\n    goto fim;", arquivo);
+    fputs("\n\n  rejeita:\n    printf(\"rejeita\");\n    goto fim;", arquivo);
     int j, k;
     char* cond;
     for(j=0; j < e; j++){
         cond = "if";
-        fprintf(arquivo, "\n\n e%d:\n", j);
+        fprintf(arquivo, "\n\n  e%d:\n   ", j);
 		for(k=0; k < a; k++){            
-			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
-		    fprintf(arquivo, "  idx++; \n goto e%d;", transicao[j][k]);
-            fputs("\n  }", arquivo);
-            cond = "if";	
+			fprintf(arquivo, " %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
+		    fprintf(arquivo, "      idx++; \n      goto e%d;", transicao[j][k]);
+            fputs("\n    }", arquivo);
+            cond = "else if";	
 		}
 		for(i=0; i < qef; i++){
             //estado final?
             if(ef[i] == j){
-            fputs("if(palavra[idx] == '\\0'){\n    goto aceita;\n  }", arquivo);
+            fputs("\n    if(palavra[idx] == '\\0'){\n      goto aceita;\n    }", arquivo);
             }
         }
-		fputs("  else{\n   goto rejeita;\n  }", arquivo);
+		fputs(" else{\n      goto rejeita;\n    }", arquivo);
 	}
 	
 	//fim
-	fputs(" \n fim:\n printf(\"\\n\");\nsystem(\"pause\");\n return 0;", arquivo);
+	fputs("\n  fim:\n    printf(\"\\n\");\n    system(\"pause\");\n    return 0;", arquivo);
 	//finaliza main
 	fputs("}\n", arquivo);
 }
