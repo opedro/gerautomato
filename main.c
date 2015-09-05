@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <string.h>
 
 char alfabeto[200];
 int estados[200];
 int transicao[200][200];
-int a, e, ei, qef;
+int a, e, ei, qef, op;
 int ef[200];
 
 void constroiAlfabeto(int);
@@ -24,14 +25,20 @@ int main(){
 	printf("Quantos estados? \n");
 	scanf(" %d", &e);
 	constroiEstados(e, a);
-	construir();
+	printf("SELECIONE \n1 - Construir com functions \n2 - Construir com goto\n");
+	scanf(" %d", &op);
+	if(op == 1)
+		construir();
+	else
+		construirGoto();
 	return 0;
 }
 
 void iniciaarquivo(){
 	printf("Qual o nome do programa? \n");
 	char s[50];
-	scanf(" %s.cpp", &s);
+	scanf(" %s", &s);
+	strcat(s, ".cpp");
     arquivo = fopen(s, "wt");
 	//includes
 	fputs("#include <stdio.h>\n#include <stdlib.h>\n#include <conio.h>\n\n", arquivo);
@@ -115,46 +122,50 @@ void construir(){
 		fputs("  else{\n    rejeita();\n  }", arquivo);
 		fputs("\n}", arquivo);
 	}
+}
 
-	/*if(f[p] == 'a')
-	{
-		p++;
-		if(f[p] == 0){
-			aceita();
-		}else{
-			e0();
+void construirGoto(){
+     int i=0;
+	//declaracoes
+	fputs("char palavra[200];\int idx = 0; \n\n", arquivo);
+	/*for (i=0; i<e; i++){
+		fprintf(arquivo, "e%d:\n", i);
+	};*/   
+	//inicia main
+	fputs("int main(){\n", arquivo);
+
+	//pergunta pela palavra
+	fputs("  printf(\"Informe a palavra a ser testada\\n\\n\");\n", arquivo);
+	//recebe palavra
+	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
+	//chama estado inicial
+	fprintf(arquivo, "idx = 0; \n goto e%d;\n", ei);
+	
+	//label
+	fputs("\n\naceita:\n  printf(\"aceita\");\n goto fim;", arquivo);
+    fputs("\n\nrejeita:\n  printf(\"rejeita\");\n goto fim;", arquivo);
+    int j, k;
+    char* cond;
+    for(j=0; j < e; j++){
+        cond = "if";
+        fprintf(arquivo, "\n\n e%d:\n", j);
+		for(k=0; k < a; k++){            
+			fprintf(arquivo, "  %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
+		    fprintf(arquivo, "  idx++; \n goto e%d;", transicao[j][k]);
+            fputs("\n  }", arquivo);
+            cond = "if";	
 		}
+		for(i=0; i < qef; i++){
+            //estado final?
+            if(ef[i] == j){
+            fputs("if(palavra[idx] == '\\0'){\n    goto aceita;\n  }", arquivo);
+            }
+        }
+		fputs("  else{\n   goto rejeita;\n  }", arquivo);
 	}
-	if(f[p] == 'b'){
-		p++;
-		if(f[p] == 0){
-			aceita();
-		}else{
-			e0();
-		}
-	}
-	if(f[p] == '+'){
-        p++;
-		if(f[p] == 0){
-			aceita();
-		}else{
-			e0();
-		}
-	}
-	if(f[p]== '='){
-        p++;
-		if(f[p] == 0){
-			aceita();
-		}else{
-			e0();
-		}
- }
-	else{
-		p++;
-        if(f[p] == 0){
-			rejeita();
-		}else{
-			e0();
-		}
-	}*/
+	
+	//fim
+	fputs(" \n fim:\n printf(\"\\n\");\nsystem(\"pause\");\n return 0;", arquivo);
+	//finaliza main
+	fputs("}\n", arquivo);
 }
