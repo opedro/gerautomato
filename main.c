@@ -3,6 +3,7 @@
 #include <conio.h>
 #include <string.h>
 
+
 char alfabeto[200];
 int estados[200];
 int transicao[200][200];
@@ -16,6 +17,9 @@ void construirGoto();
 void erro();
 void sucesso();
 void iniciaarquivo();
+
+char* cleanName(char*);
+
 FILE *arquivo;
 
 int main(){
@@ -36,11 +40,10 @@ int main(){
 }
 
 void iniciaarquivo(){
-	printf("Qual o nome do programa? \n");
 	char s[50];
-	scanf(" %s", &s);
-	strcat(s, ".cpp");
-    arquivo = fopen(s, "wt");
+	printf("Qual o nome do programa? \n");
+	gets(s);	
+	arquivo = fopen(cleanName(s), "wt");
 	//includes
 	fputs("#include <stdio.h>\n#include <stdlib.h>\n#include <conio.h>\n\n", arquivo);
 }
@@ -65,7 +68,7 @@ void constroiEstados(int e, int a){
 
 	for(j=0; j < qef; j++){
 		printf("Qual o estado final %d \ne", j+1);
-	    scanf(" %d", &ef[j]);
+		scanf(" %d", &ef[j]);
 	}
 
 	for(j=0; j < e; j++){
@@ -77,15 +80,15 @@ void constroiEstados(int e, int a){
 }
 
 void construir(){
-     int i=0;
+	int i=0;
 	//declaracoes
 	fputs("char palavra[200];\n\n", arquivo);
 	for (i=0; i<e; i++){
 		fprintf(arquivo, "void e%d(int);\n", i);
 	};   
-    fputs("void aceita();\n", arquivo);
-    fputs("void rejeita();\n", arquivo);
-    
+	fputs("void aceita();\n", arquivo);
+	fputs("void rejeita();\n", arquivo);
+
 	//inicia main
 	fputs("int main(){\n", arquivo);
 
@@ -95,36 +98,36 @@ void construir(){
 	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
 	//chama estado inicial
 	fprintf(arquivo, "  e%d(0);\n", ei);
-    //finaliza main
+		//finaliza main
 	fputs("}\n", arquivo);
 	
 	
 	
 	//funcoes
 	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n}", arquivo);
-    fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n}", arquivo);
-    int j, k;
-    char* cond;
-    for(j=0; j < e; j++){
-        fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
+	fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n}", arquivo);
+	int j, k;
+	char* cond;
+	for(j=0; j < e; j++){
+		fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
 		for(k=0; k < a; k++){            
 			fprintf(arquivo, "  if(palavra[idx] == '%c'){\n", alfabeto[k]);
-		    fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
-            fputs("\n  }\n", arquivo);	
+			fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
+			fputs("\n  }\n", arquivo);	
 		}
 		for(i=0; i < qef; i++){
-            //estado final?
-            if(ef[i] == j){
-            fputs("  if(palavra[idx] == '\\0'){\n    aceita();\n  }\n", arquivo);
-            }
-        }
+		//estado final?
+			if(ef[i] == j){
+				fputs("  if(palavra[idx] == '\\0'){\n    aceita();\n  }\n", arquivo);
+			}
+		}
 		fputs("  else{\n    rejeita();\n  }", arquivo);
 		fputs("\n}", arquivo);
 	}
 }
 
 void construirGoto(){
-     int i=0;
+	int i=0;
 	//declaracoes
 	fputs("char palavra[200];\nint idx = 0; \n\n", arquivo);
 	
@@ -140,29 +143,46 @@ void construirGoto(){
 	
 	//label
 	fputs("\n  aceita:\n    printf(\"aceita\");\n    goto fim;", arquivo);
-    fputs("\n\n  rejeita:\n    printf(\"rejeita\");\n    goto fim;", arquivo);
-    int j, k;
-    char* cond;
-    for(j=0; j < e; j++){
-        cond = "if";
-        fprintf(arquivo, "\n\n  e%d:\n   ", j);
+	fputs("\n\n  rejeita:\n    printf(\"rejeita\");\n    goto fim;", arquivo);
+	int j, k;
+	char* cond;
+	for(j=0; j < e; j++){
+		cond = "if";
+		fprintf(arquivo, "\n\n  e%d:\n   ", j);
 		for(k=0; k < a; k++){            
 			fprintf(arquivo, " %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
-		    fprintf(arquivo, "      idx++; \n      goto e%d;", transicao[j][k]);
-            fputs("\n    }", arquivo);
-            cond = "else if";	
+			fprintf(arquivo, "      idx++; \n      goto e%d;", transicao[j][k]);
+			fputs("\n    }", arquivo);
+			cond = "else if";	
 		}
 		for(i=0; i < qef; i++){
-            //estado final?
-            if(ef[i] == j){
-            fputs("\n    if(palavra[idx] == '\\0'){\n      goto aceita;\n    }", arquivo);
-            }
-        }
+			//estado final?
+			if(ef[i] == j){
+				fputs("\n    if(palavra[idx] == '\\0'){\n      goto aceita;\n    }", arquivo);
+			}
+		}
 		fputs(" else{\n      goto rejeita;\n    }", arquivo);
 	}
-	
+
 	//fim
 	fputs("\n  fim:\n    printf(\"\\n\");\n    system(\"pause\");\n    return 0;", arquivo);
 	//finaliza main
 	fputs("}\n", arquivo);
 }
+
+// deixa o nome do arquivo bonito :)
+char* cleanName(char* str){
+	int i;
+	char* ret = str;
+
+	for( i=0; i < strlen(str); i++){	   
+		if(str[i] != ' '){
+			ret[i] = str[i];
+		} else {
+			ret[i] = '_';
+		}
+	} 
+
+	strcat(ret, ".c");
+	return ret;
+};
