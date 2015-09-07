@@ -50,9 +50,14 @@ void iniciaarquivo(){
 
 void constroiAlfabeto(int a){
 	int i =0;
-	for(i=0; i < a; i++){
-		printf("Qual o simbolo %d ?\n", i+1);
-		scanf(" %c", &alfabeto[i]);
+	for(i=0; i < a; i++){	
+		do {
+			printf("Qual o simbolo %d ?\n", i+1);
+			alfabeto[i] = getche();
+			printf("\n");
+						
+		} while( (int)alfabeto[i] < 33 );
+		
 	}
 }
 
