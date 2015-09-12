@@ -109,15 +109,20 @@ void construir(){
 	
 	
 	//funcoes
-	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n}", arquivo);
-	fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n}", arquivo);
+	fputs("\n\nvoid aceita(){\n  printf(\"aceita\");\n  exit(0);\n}", arquivo);
+	fputs("\n\nvoid rejeita(){\n  printf(\"rejeita\");\n  exit(0);\n}", arquivo);
 	int j, k;
 	char* cond;
 	for(j=0; j < e; j++){
 		fprintf(arquivo, "\n\nvoid e%d(int idx){\n", j);
 		for(k=0; k < a; k++){            
 			fprintf(arquivo, "  if(palavra[idx] == '%c'){\n", alfabeto[k]);
-			fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
+			if(transicao[j][k] < e){
+          fprintf(arquivo, "    e%d(idx+1);", transicao[j][k]);
+      } else {
+          fputs("    rejeita();", arquivo);
+      }     
+			
 			fputs("\n  }\n", arquivo);	
 		}
 		for(i=0; i < qef; i++){
