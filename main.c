@@ -100,7 +100,7 @@ void construir(){
 	//pergunta pela palavra
 	fputs("  printf(\"Informe a palavra a ser testada\\n\");\n", arquivo);
 	//recebe palavra
-	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
+	fputs("  gets(palavra);\n", arquivo);
 	//chama estado inicial
 	fprintf(arquivo, "  e%d(0);\n", ei);
 		//finaliza main
@@ -147,7 +147,7 @@ void construirGoto(){
 	//pergunta pela palavra
 	fputs("  printf(\"Informe a palavra a ser testada\\n\\n\");\n", arquivo);
 	//recebe palavra
-	fputs("  scanf(\"%s\", &palavra);\n", arquivo);
+	fputs("  gets(palavra);\n", arquivo);
 	//chama estado inicial
 	fprintf(arquivo, "  idx = 0; \n goto e%d;\n", ei);
 	
@@ -161,7 +161,12 @@ void construirGoto(){
 		fprintf(arquivo, "\n\n  e%d:\n   ", j);
 		for(k=0; k < a; k++){            
 			fprintf(arquivo, " %s(palavra[idx] == '%c'){\n", cond, alfabeto[k]);
-			fprintf(arquivo, "      idx++; \n      goto e%d;", transicao[j][k]);
+			if(transicao[j][k] < e){
+        fprintf(arquivo, "      idx++; \n      goto e%d;", transicao[j][k]);
+      } else {
+        fputs("    goto rejeita;", arquivo);
+      }
+			
 			fputs("\n    }", arquivo);
 			cond = "else if";	
 		}
